@@ -54,7 +54,7 @@ internal fun PdfPageEditorDialog(file: File, onDismiss: () -> Unit, onSaved: () 
                 try {
                     val added = withContext(Dispatchers.IO) {
                         val bitmap = context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
-                            ?: error("No se pudo abrir la imagen")
+                            ?: throw IllegalStateException("No se pudo abrir la imagen")
                         val output = File(folder, "added_\${System.nanoTime()}.png")
                         FileOutputStream(output).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
                         bitmap.recycle()
