@@ -203,13 +203,7 @@ private fun rebuildPdfFromPages(original: File, folder: File, pages: List<File>)
         backup.delete()
         File(original.parentFile, original.nameWithoutExtension + ".txt").delete()
 
-        val ordered = File(folder.parentFile, folder.name + ".ordered")
-        ordered.deleteRecursively()
-        ordered.mkdirs()
-        pages.forEachIndexed { index, source ->
-            source.copyTo(File(ordered, String.format(Locale.US, "page_%04d.png", index + 1)), overwrite = true)
-        }
         folder.deleteRecursively()
-        check(ordered.renameTo(folder)) { "El PDF se guardó, pero no se pudo actualizar la caché de páginas" }
+
     } finally { document.close() }
 }
