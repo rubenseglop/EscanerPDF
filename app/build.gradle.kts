@@ -5,6 +5,17 @@ plugins {
 }
 
 android {
+    // Certificado estable compartido con conSaldoApp y calendarioApp.
+    // Mantener este keystore para que las APK sucesivas puedan actualizarse.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     namespace = "es.rubenseglop.escanerpdf"
     compileSdk = 36
 
