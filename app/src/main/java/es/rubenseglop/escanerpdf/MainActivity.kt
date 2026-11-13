@@ -71,6 +71,7 @@ private fun EscanerPdfApp() {
     var renameTarget by remember { mutableStateOf<File?>(null) }
     var deleteTarget by remember { mutableStateOf<File?>(null) }
     var previewTarget by remember { mutableStateOf<File?>(null) }
+    var editTarget by remember { mutableStateOf<File?>(null) }
     var renameText by remember { mutableStateOf("") }
     var darkTheme by remember { mutableStateOf(prefs.getBoolean("dark", false)) }
     var autoOcr by remember { mutableStateOf(prefs.getBoolean("auto_ocr", false)) }
@@ -204,7 +205,8 @@ private fun EscanerPdfApp() {
                                 onRename = { renameTarget = file; renameText = file.nameWithoutExtension },
                                 onDelete = { deleteTarget = file },
                                 onOcr = { runOcr(file, context, scope, { busyFile = it }, { busyFile = null }) { message = it } },
-                                onPrint = { printPdf(context, file) }
+                                onPrint = { printPdf(context, file) },
+                                onEdit = { editTarget = file }
                             )
                         }
                     }
@@ -301,6 +303,17 @@ private fun EscanerPdfApp() {
         )
     }
 
+    if (editTarget != null) {
+        PdfPageEditorDialog(
+            file = editTarget!!,
+            onDismiss = { editTarget = null },
+            onSaved = {
+                refreshDocuments(context.filesDir) { documents = it }
+                message = "Páginas actualizadas correctamente. Vuelve a ejecutar OCR para renovar el texto reconocido."
+            }
+        )
+    }
+
     if (previewTarget != null) {
         PdfPreviewDialog(file = previewTarget!!, onDismiss = { previewTarget = null }, onShare = { sharePdf(context, it) }, onPrint = { printPdf(context, it) })
     }
@@ -315,7 +328,8 @@ private fun DocumentCard(
     onRename: () -> Unit,
     onDelete: () -> Unit,
     onOcr: () -> Unit,
-    onPrint: () -> Unit
+    onPrint: () -> Unit,
+    onEdit: () -> Unit
 ) {
     var menu by remember { mutableStateOf(false) }
     val ocrExists = remember(file.lastModified()) { File(file.parentFile, file.nameWithoutExtension + ".txt").exists() }
@@ -343,6 +357,7 @@ private fun DocumentCard(
                 IconButton(onClick = { menu = true }) { Icon(Icons.Default.MoreVert, "Más opciones") }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text("Abrir / Vista previa") }, leadingIcon = { Icon(Icons.Default.Visibility, null) }, onClick = { menu = false; onOpen() })
+                    DropdownMenuItem(text = { Text("Editar páginas") }, leadingIcon = { Icon(Icons.Default.Edit, null) }, onClick = { menu = false; onEdit() })
                     DropdownMenuItem(text = { Text("Reconocer texto (OCR)") }, leadingIcon = { Icon(Icons.Default.TextFields, null) }, onClick = { menu = false; onOcr() }, enabled = !busy)
                     DropdownMenuItem(text = { Text("Imprimir") }, leadingIcon = { Icon(Icons.Default.Print, null) }, onClick = { menu = false; onPrint() })
                     DropdownMenuItem(text = { Text("Renombrar") }, leadingIcon = { Icon(Icons.Default.Edit, null) }, onClick = { menu = false; onRename() })
