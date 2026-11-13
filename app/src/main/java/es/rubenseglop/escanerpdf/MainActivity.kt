@@ -1,5 +1,6 @@
 package es.rubenseglop.escanerpdf
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -39,9 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import com.google.android.gms.mlkit.documents.GmsDocumentScanning
-import com.google.android.gms.mlkit.documents.GmsDocumentScannerOptions
-import com.google.android.gms.mlkit.documents.GmsDocumentScanningResult
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -77,7 +78,7 @@ private fun EscanerPdfApp() {
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         scanning = false
-        if (result.resultCode == RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) {
             val scanResult = GmsDocumentScanningResult.fromActivityResultIntent(result.data)
             val pdfUri = scanResult?.pdf?.uri
             if (pdfUri != null) {
