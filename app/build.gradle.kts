@@ -5,8 +5,7 @@ plugins {
 }
 
 android {
-    // Certificado estable compartido con conSaldoApp y calendarioApp.
-    // Mantener este keystore para que las APK sucesivas puedan actualizarse.
+    // Certificado estable: no sustituirlo, permite actualizar APK sin desinstalar.
     signingConfigs {
         getByName("debug") {
             storeFile = file("debug.keystore")
@@ -15,40 +14,27 @@ android {
             keyPassword = "android"
         }
     }
-
     namespace = "es.rubenseglop.escanerpdf"
     compileSdk = 36
-
     defaultConfig {
         applicationId = "es.rubenseglop.escanerpdf"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    buildFeatures {
-        compose = true
-    }
+    kotlinOptions { jvmTarget = "17" }
+    buildFeatures { compose = true }
 }
 
 dependencies {
@@ -60,6 +46,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0")
-
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
