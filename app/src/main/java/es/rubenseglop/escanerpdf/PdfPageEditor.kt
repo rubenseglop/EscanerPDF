@@ -55,7 +55,7 @@ internal fun PdfPageEditorDialog(file: File, onDismiss: () -> Unit, onSaved: () 
                     val added = withContext(Dispatchers.IO) {
                         val bitmap = context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
                             ?: throw IllegalStateException("No se pudo abrir la imagen")
-                        val output = File(folder, "added_\${System.nanoTime()}.png")
+                        val output = File(folder, "added_${System.nanoTime()}.png")
                         FileOutputStream(output).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
                         bitmap.recycle()
                         output
@@ -77,7 +77,7 @@ internal fun PdfPageEditorDialog(file: File, onDismiss: () -> Unit, onSaved: () 
         title = { Text("Editar páginas") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Organiza las páginas de \${file.name}. Puedes añadir imágenes desde la galería.", style = MaterialTheme.typography.bodySmall)
+                Text("Organiza las páginas de ${file.name}. Puedes añadir imágenes desde la galería.", style = MaterialTheme.typography.bodySmall)
                 if (loading || saving) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CircularProgressIndicator(modifier = Modifier.size(20.dp))
@@ -86,7 +86,7 @@ internal fun PdfPageEditorDialog(file: File, onDismiss: () -> Unit, onSaved: () 
                 }
                 if (error != null) Text(error!!, color = MaterialTheme.colorScheme.error)
                 if (!loading) {
-                    Text("\${pages.size} páginas", style = MaterialTheme.typography.labelLarge)
+                    Text("${pages.size} páginas", style = MaterialTheme.typography.labelLarge)
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth().heightIn(max = 390.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -141,9 +141,9 @@ private fun PageEditorRow(
         value = withContext(Dispatchers.IO) { BitmapFactory.decodeFile(pageFile.absolutePath) }
     }
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        if (bitmap != null) Image(bitmap!!.asImageBitmap(), "Página \${index + 1}", Modifier.size(58.dp, 76.dp))
+        if (bitmap != null) Image(bitmap!!.asImageBitmap(), "Página ${index + 1}", Modifier.size(58.dp, 76.dp))
         else Icon(Icons.Default.PictureAsPdf, null, Modifier.size(58.dp, 76.dp))
-        Text("Página \${index + 1}", Modifier.weight(1f).padding(start = 10.dp))
+        Text("Página ${index + 1}", Modifier.weight(1f).padding(start = 10.dp))
         IconButton(onClick = onMoveUp, enabled = canMoveUp) { Icon(Icons.Default.ArrowUpward, "Subir página") }
         IconButton(onClick = onMoveDown, enabled = canMoveDown) { Icon(Icons.Default.ArrowDownward, "Bajar página") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, "Eliminar página", tint = MaterialTheme.colorScheme.error) }
@@ -178,7 +178,7 @@ private fun rebuildPdfFromPages(original: File, folder: File, pages: List<File>)
     val document = PdfDocument()
     try {
         pages.forEachIndexed { index, imageFile ->
-            val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath) ?: error("No se pudo leer la página \${index + 1}")
+            val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath) ?: error("No se pudo leer la página ${index + 1}")
             val info = PdfDocument.PageInfo.Builder(595, 842, index + 1).create()
             val page = document.startPage(info)
             val scale = minOf(595f / bitmap.width, 842f / bitmap.height)
