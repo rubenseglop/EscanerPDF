@@ -420,7 +420,7 @@ private fun runOcr(file: File, context: Context, scope: kotlinx.coroutines.Corou
                                 val scale = (1800f / page.width).coerceAtMost(3f)
                                 val bitmap = Bitmap.createBitmap((page.width * scale).toInt(), (page.height * scale).toInt(), Bitmap.Config.ARGB_8888)
                                 bitmap.eraseColor(android.graphics.Color.WHITE)
-                                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_ANALYSIS)
+                                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
                                 val result = recognizer.process(InputImage.fromBitmap(bitmap, 0)).await()
                                 output.append("\n--- Página ${index + 1} ---\n").append(result.text).append("\n")
                                 bitmap.recycle()
